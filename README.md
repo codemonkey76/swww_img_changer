@@ -18,4 +18,4 @@ cargo build --release
 ```
 Then, put the binary 'target/release/swww_img_changer' in your path.
 
-You can then add it as a cronjob to run when you like.
+If you want to regularly alter your wallpaper instead of using a hotkey, you can run the install_service script in the service folder to install a wallpaper.timer and wallpaper.service file. The timer is set to every 10 minutes, change as desired.

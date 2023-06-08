@@ -1,0 +1,9 @@
+#!/bin/bash
+
+SCRIPT_PATH=$(readlink -f $0)
+SCRIPT_DIR=$(dirname "$SCRIPT_PATH")
+
+sudo cp "$SCRIPT_DIR/wallpaper.*" /etc/systemd/system/
+
+sudo systemctl daemon-reload
+sudo systemctl enable --now wallpaper.timer

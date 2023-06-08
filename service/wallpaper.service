@@ -1,0 +1,5 @@
+[Unit]
+Description=Change Wallpaper
+
+[Service]
+ExecStart=/usr/local/bin/swww_img_changer
