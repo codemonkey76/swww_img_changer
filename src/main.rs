@@ -10,8 +10,16 @@ fn main() {
     if args.len() != 2 {
         panic!("Usage: {} /path/to/your/backgrounds", args[0]);
     }
-    let current_bg = get_current_background();
+    let current_bg = match get_current_background() {
+        Ok(bg) => bg,
+        Err(e) => {
+            eprintln!("Failed to get current background: {}", e);
+            return;
+        },
+    };
+
     let bg_dir = &args[1];
+    println!("{}", bg_dir);
 
     // List all files in the backgrounds directory
     let paths = fs::read_dir(bg_dir).unwrap();
@@ -45,14 +53,17 @@ fn main() {
         .expect("Failed to set new background");
 }
 
-fn get_current_background() -> String {
+fn get_current_background() -> Result<String, Box<dyn std::error::Error>> {
     let output = Command::new("swww")
         .arg("query")
-        .output()
-        .expect("Failed to execute swww query command");
+        .output()?;
 
-    let re = Regex::new(r#"image: "(.*)""#).unwrap();
-    let output_str = String::from_utf8(output.stdout).unwrap();
-    let caps = re.captures(&output_str).unwrap();
-    caps.get(1).map_or(String::new(), |m| m.as_str().to_string())
+    let re = Regex::new(r#"image: "(.*)""#)?;
+    let output_str = String::from_utf8(output.stdout)?;
+
+    match re.captures(&output_str) {
+        Some(caps) => Ok(caps.get(1).map_or(String::new(), |m| m.as_str().to_string())),
+        None => Ok(String::new()),
+    }
 }
+
